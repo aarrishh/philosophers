@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   temp.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: arimanuk <arimanuk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/25 18:56:26 by arimanuk          #+#    #+#             */
-/*   Updated: 2025/07/06 20:55:56 by arimanuk         ###   ########.fr       */
+/*   Updated: 2025/07/06 19:04:41 by arimanuk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,39 +38,55 @@ void*	thread_function(void *philo)
 {
 	// (void)philo;
 	t_philo *Ph = philo;
-	printf("id = %lu\n", Ph->thread_id);
+	// printf("id = %lu\n", Ph->thread_id);
+	// printf("id2 = %lu\n", Ph->thread_id2);
+	pthread_mutex_lock(&Ph->boo);
+	int i = 0;
+	while (i < 10000000)
+	{
+		Ph->bo++;
+		i++;
+	}
+	pthread_mutex_unlock(&Ph->boo);
+	printf("vvvvvvv = %d\n", Ph->bo);
+
 	return (NULL);	
 }
 
 void	init_philo(t_philo *philo, t_info info, int num_philos)
 {
-	int flag;
+	(void)num_philos;
 
-	flag = num_philos;
-	while (num_philos--)
-	{
-		philo->id = num_philos;
-		philo->eaten_count = 0;
-		philo->is_alive = 1;
-		philo->info = &info;
-		if (num_philos == 1)
-		{
-			philo->left_fork = num_philos;
-		}
-		philo->right_fork = num_philos - 1;
-		pthread_create(&philo->thread_id, NULL, thread_function, philo);
-	}
+	// printf("bo = %d\n", philo->bo);
+
+	pthread_mutex_init(&philo->boo, NULL);
+		
+			pthread_create(&philo->thread_id, NULL, thread_function, philo);
+			pthread_create(&philo->thread_id2, NULL, thread_function, philo);
+
+			// philo->bo++;
+		// pthread_create(&philo->thread_id2, NULL, thread_function, philo);
+
+			pthread_join(philo->thread_id, NULL);
+			pthread_join(philo->thread_id2, NULL);
+
+		// pthread_join(philo->thread_id2, NULL);
+
+
+	printf("bo = %d\n", philo->bo);
+	(void)info;
 }
 
 void	validation(char **argv)
 {
 	t_info info;
 	t_philo philo;
+	philo.bo = 0;
 	int num_philos;
 	
 	num_philos = init_info(argv, &info);
 	init_philo(&philo, info, num_philos);
-	simulation(&philo);
+	// simulation(&philo);
 	// printf("argv[1]->%d\n", info.num_philos);
 	// printf("argv[2]->%d\n", info.time_to_die);
 	// printf("argv[3]->%d\n", info.time_to_eat);
