@@ -1,18 +1,5 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: arimanuk <arimanuk@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/25 18:56:26 by arimanuk          #+#    #+#             */
-/*   Updated: 2025/07/08 18:33:41 by arimanuk         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "philo.h"
 #include <sys/time.h>
-
 
 long long current_timestamp_ms(void)
 {
@@ -21,7 +8,7 @@ long long current_timestamp_ms(void)
 	return (time.tv_sec * 1000LL + time.tv_usec / 1000);
 }
 
-long	check_atoi(long long num)
+long check_atoi(long long num)
 {
 	if ((num < INT_MIN || num > INT_MAX) || num <= 0)
 	{
@@ -31,7 +18,7 @@ long	check_atoi(long long num)
 	return (num);
 }
 
-int	init_info(char **argv, t_info *info)
+int init_info(char **argv, t_info *info)
 {
 	int num_philos;
 
@@ -51,53 +38,105 @@ int	init_info(char **argv, t_info *info)
 	return (num_philos);
 }
 
-void print_state(t_philo *philo, char *text)
+int safe_print(t_philo *ph, char *text) // ✅ ՆՈՐ ՖՈՒՆԿՑԻԱ՝ վերահսկելու տպումը
 {
-	long long timestamp = current_timestamp_ms() - philo->info->start_time;
-	printf("[%lld] %d %s\n", timestamp, philo->id, text);
+	pthread_mutex_lock(&ph->info->alive_mutex);
+	if (ph->info->is_alive == -1)
+	{
+		pthread_mutex_unlock(&ph->info->alive_mutex);
+		return 0; // ✅ ՆՈՐ՝ չտպի, եթե մեկը արդեն մեռել է
+	}
+	long long timestamp = current_timestamp_ms() - ph->info->start_time;
+	printf("[%lld] %d %s\n", timestamp, ph->id, text);
+	pthread_mutex_unlock(&ph->info->alive_mutex);
+	return 1;
 }
 
-void	*thread_function(void *philo)
+void case_one(t_philo *ph)
 {
-	t_philo *ph;
-	
-	ph = (t_philo *)philo;
+	pthread_mutex_lock(ph->left_fork);
+	safe_print(ph, "has taken a fork"); // ✅ ՓՈԽԱՐԻՆԵՑԻ print_state safe_print-ով
+	usleep(ph->info->time_to_die * 1000);
+	pthread_mutex_lock(&ph->info->alive_mutex); // ✅ Ավելացվել է մեռնելուց առաջ lock
+	if (ph->info->is_alive == 1)
+	{
+		ph->info->is_alive = -1;
+		long long timestamp = current_timestamp_ms() - ph->info->start_time;
+		printf("[%lld] %d died\n", timestamp, ph->id); // ✅ Մենակ մեկ death տպելու համար
+	}
+	pthread_mutex_unlock(&ph->info->alive_mutex);
+	pthread_mutex_unlock(ph->left_fork);
+}
+
+int check_alive(t_philo *ph) // ✅ ՆՈՐ ՖՈՒՆԿՑԻԱ՝ ստուգում է արդյոք simulation-ը շարունակվի
+{
+	pthread_mutex_lock(&ph->info->alive_mutex);
+	if (ph->info->is_alive == -1)
+	{
+		pthread_mutex_unlock(&ph->info->alive_mutex);
+		return -1; // ✅ Եթե արդեն մեռած է՝ դադարեցնել
+	}
+	pthread_mutex_unlock(&ph->info->alive_mutex);
+	return 0;
+}
+
+void *thread_function(void *philo)
+{
+	t_philo *ph = (t_philo *)philo;
+
 	while (1)
 	{
+		if (check_alive(ph) == -1) // ✅ Ավելացված է՝ ամեն ցիկլի սկզբում ստուգի
+			return NULL;
 		if (ph->id % 2 == 0)
 			usleep(500);
+		if (ph->info->num_philos == 1)
+			return (case_one(ph), NULL);
 		pthread_mutex_lock(ph->left_fork);
-		print_state(ph, "has taken a fork");
-		printf("---%lld\n",current_timestamp_ms() - ph->last_meal_time);
+		if (!safe_print(ph, "has taken a fork")) // ✅ safe_print ստուգում
+		{
+			pthread_mutex_unlock(ph->left_fork);
+			return NULL;
+		}
+		pthread_mutex_lock(ph->right_fork);
+		if (!safe_print(ph, "has taken a fork")) // ✅ safe_print ստուգում
+		{
+			pthread_mutex_unlock(ph->right_fork);
+			pthread_mutex_unlock(ph->left_fork);
+			return NULL;
+		}
+		if (!safe_print(ph, "is eating")) // ✅ safe_print ստուգում
+		{
+			pthread_mutex_unlock(ph->right_fork);
+			pthread_mutex_unlock(ph->left_fork);
+			return NULL;
+		}
+		ph->last_meal_time = current_timestamp_ms();
+		usleep(ph->info->time_to_eat * 1000);
+		pthread_mutex_unlock(ph->right_fork);
+		pthread_mutex_unlock(ph->left_fork);
+		if (!safe_print(ph, "is sleeping")) // ✅ safe_print ստուգում
+			return NULL;
+		usleep(ph->info->time_to_sleep * 1000);
+		if (!safe_print(ph, "is thinking")) // ✅ safe_print ստուգում
+			return NULL;
 		if (current_timestamp_ms() - ph->last_meal_time > ph->info->time_to_die)
 		{
 			pthread_mutex_lock(&ph->info->alive_mutex);
-			if (ph->info->is_alive)
+			if (ph->info->is_alive == 1) // ✅ Ստուգում՝ մեռած չլինի
 			{
 				ph->info->is_alive = -1;
-				print_state(ph, "died");
+				long long timestamp = current_timestamp_ms() - ph->info->start_time;
+				printf("[%lld] %d died\n", timestamp, ph->id); // ✅ Մենակ մեկ death
 			}
 			pthread_mutex_unlock(&ph->info->alive_mutex);
 			return NULL;
 		}
-		pthread_mutex_lock(ph->right_fork);
-		print_state(ph, "has taken a fork");
-		
-		print_state(ph, "is eating");
-		usleep(ph->info->time_to_eat * 1000);
-		
-		ph->last_meal_time = current_timestamp_ms();
-		// printf("eeee->%lld\n", current_timestamp_ms());
-		pthread_mutex_unlock(ph->right_fork);
-		pthread_mutex_unlock(ph->left_fork);
-		
-		print_state(ph, "is sleeping");
-		usleep(ph->info->time_to_sleep * 1000);
-		print_state(ph, "is thinking");
 	}
+	return NULL;
 }
 
-void	init_philo(t_philo *philos, t_info *info)
+void init_philo(t_philo *philos, t_info *info)
 {
 	int i = 0;
 	while (i < info->num_philos)
@@ -108,24 +147,13 @@ void	init_philo(t_philo *philos, t_info *info)
 		philos[i].left_fork = &info->forks[i];
 		philos[i].right_fork = &info->forks[(i + 1) % info->num_philos];
 		pthread_create(&philos[i].thread_id, NULL, thread_function, &philos[i]);
-		printf("havor%d\n", i);
 		i++;
 	}
-	printf("havorrrrrrrrrrrrrrrrrr%d\n", i);
-
-
-		if (info->is_alive == -1)
-		{
-			printf("haahhh%d\n", i);
-			simulation(philos, info->num_philos);
-		}
-		
 }
 
-void	simulation(t_philo *philos, int num_philos)
+void simulation(t_philo *philos, int num_philos)
 {
 	int i = 0;
-
 	while (i < num_philos)
 	{
 		pthread_join(philos[i].thread_id, NULL);
@@ -133,7 +161,7 @@ void	simulation(t_philo *philos, int num_philos)
 	}
 }
 
-void	validation(char **argv)
+void validation(char **argv)
 {
 	t_info info;
 	t_philo *philos;
@@ -144,7 +172,7 @@ void	validation(char **argv)
 	if (!info.forks)
 	{
 		printf("Malloc failed (forks)\n");
-		return ;
+		return;
 	}
 	i = 0;
 	while (i < info.num_philos)
@@ -166,16 +194,15 @@ void	validation(char **argv)
 		pthread_mutex_destroy(&info.forks[i]);
 		i++;
 	}
-
 	free(info.forks);
 	free(philos);
 }
 
-int	main(int argc, char **argv)
+int main(int argc, char **argv)
 {
 	if (argc == 5 || argc == 6)
 		validation(argv);
 	else
 		return (printf("Usage: n_philos t_die t_eat t_sleep [eat_limit]\n"), -1);
-	return (0);
+	return 0;
 }
