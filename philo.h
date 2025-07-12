@@ -6,7 +6,7 @@
 /*   By: arimanuk <arimanuk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/25 18:55:22 by arimanuk          #+#    #+#             */
-/*   Updated: 2025/07/11 21:20:56 by arimanuk         ###   ########.fr       */
+/*   Updated: 2025/07/12 16:22:39 by arimanuk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ typedef struct s_info
 	int				eat_flag;
 	int				time_to_sleep;
 	int				is_alive;
+	int				done_eating;
 	long long		start_time;
 	pthread_t		eat_thread_id;
 	pthread_mutex_t	check_eat_count_mutex;
@@ -59,18 +60,18 @@ typedef struct s_philo
 } t_philo;
 
 //Libft functions
+int			print_message(t_philo *ph, char *text);
+int			init_info(char **argv, t_info *info);
+int			check_alive(t_philo *ph);
+int			for_eat_2(t_philo *ph);
+long long 	current_timestamp_ms(void);
 long long	ft_atoi(const char *str);
-void		simulation(t_philo *philos, t_info *info);
+long		check_atoi(long long num);
 void		*for_eat(void* philo);
-void		*thread_function(void *philo);
-long long current_timestamp_ms(void);
+void		case_one(t_philo *ph);
 void		*for_life(void *philo);
-void	init_philo(t_philo *philos, t_info *info);
-int	init_info(char **argv, t_info *info);
-long check_atoi(long long num);
-int	print_message(t_philo *ph, char *text);
-void case_one(t_philo *ph);
-void	validation_2(t_philo *philos, t_info *info);
-int	check_alive(t_philo *ph);
-void	*for_eat_2(t_philo *ph);
+void		*thread_function(void *philo);
+void		init_philo(t_philo *philos, t_info *info);
+void		simulation(t_philo *philos, t_info *info);
+void		validation_2(t_philo *philos, t_info *info);
 #endif

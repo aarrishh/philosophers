@@ -6,7 +6,7 @@
 /*   By: arimanuk <arimanuk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/11 20:45:00 by arimanuk          #+#    #+#             */
-/*   Updated: 2025/07/11 21:05:56 by arimanuk         ###   ########.fr       */
+/*   Updated: 2025/07/12 16:22:58 by arimanuk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ int	init_info(char **argv, t_info *info)
 	if (argv[5])
 		info->eat_limit = check_atoi(ft_atoi(argv[5]));
 	info->num_philos = num_philos;
+	info->done_eating = 0;
 	return (num_philos);
 }
 

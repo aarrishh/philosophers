@@ -6,7 +6,7 @@
 /*   By: arimanuk <arimanuk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/11 20:50:18 by arimanuk          #+#    #+#             */
-/*   Updated: 2025/07/11 21:19:48 by arimanuk         ###   ########.fr       */
+/*   Updated: 2025/07/12 15:40:49 by arimanuk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,12 +52,6 @@ void	validation_2(t_philo *philos, t_info *info)
 	int	i;
 
 	i = 0;
-	philos = malloc(sizeof(t_philo) * info->num_philos);
-	if (!philos)
-	{
-		printf("Malloc failed (philosophers)\n");
-		exit(1);
-	}
 	init_philo(philos, info);
 	if (info->eat_limit != -1)
 		pthread_create(&info->eat_thread_id, NULL, for_eat, philos);
@@ -90,6 +84,12 @@ void	validation(char **argv)
 	{
 		pthread_mutex_init(&info.forks[i], NULL);
 		i++;
+	}
+	philos = malloc(sizeof(t_philo) * info.num_philos);
+	if (!philos)
+	{
+		printf("Malloc failed (philosophers)\n");
+		exit(1);
 	}
 	validation_2(philos, &info);
 }

@@ -6,7 +6,7 @@
 /*   By: arimanuk <arimanuk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/11 20:35:31 by arimanuk          #+#    #+#             */
-/*   Updated: 2025/07/11 21:23:55 by arimanuk         ###   ########.fr       */
+/*   Updated: 2025/07/12 15:39:39 by arimanuk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,7 @@ void simulation(t_philo *philos, t_info *info)
 		pthread_join(philos[i].life_thread_id, NULL);
 		i++;
 	}
-	pthread_join(info->eat_thread_id, NULL);
+	if (info->eat_limit != -1)
+		pthread_join(info->eat_thread_id, NULL);
 }
 
