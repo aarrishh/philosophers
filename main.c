@@ -6,7 +6,7 @@
 /*   By: arimanuk <arimanuk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/11 20:50:18 by arimanuk          #+#    #+#             */
-/*   Updated: 2025/07/12 15:40:49 by arimanuk         ###   ########.fr       */
+/*   Updated: 2025/07/12 16:57:36 by arimanuk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,12 +25,12 @@ int	print_message(t_philo *ph, char *text)
 	timestamp = current_timestamp_ms() - ph->info->start_time;
 	printf("[%lld] %d %s\n", timestamp, ph->id, text);
 	pthread_mutex_unlock(&ph->info->alive_mutex);
-	return 1;
+	return (1);
 }
 
-void case_one(t_philo *ph)
+void	case_one(t_philo *ph)
 {
-	long long timestamp;
+	long long	timestamp;
 
 	pthread_mutex_lock(ph->left_fork);
 	print_message(ph, "has taken a fork");
@@ -45,7 +45,6 @@ void case_one(t_philo *ph)
 	pthread_mutex_unlock(&ph->info->alive_mutex);
 	pthread_mutex_unlock(ph->left_fork);
 }
-
 
 void	validation_2(t_philo *philos, t_info *info)
 {
@@ -65,7 +64,7 @@ void	validation_2(t_philo *philos, t_info *info)
 	free(philos);
 }
 
-void	validation(char **argv)
+int	validation(char **argv)
 {
 	t_philo	*philos;
 	t_info	info;
@@ -73,32 +72,39 @@ void	validation(char **argv)
 
 	philos = NULL;
 	info.num_philos = init_info(argv, &info);
+	if (info.num_philos == -1)
+		return (1);
 	info.forks = malloc(sizeof(pthread_mutex_t) * info.num_philos);
 	if (!info.forks)
 	{
 		printf("Malloc failed (forks)\n");
-		return;
+		return (1);
 	}
 	i = 0;
 	while (i < info.num_philos)
-	{
-		pthread_mutex_init(&info.forks[i], NULL);
-		i++;
-	}
+		pthread_mutex_init(&info.forks[i++], NULL);
 	philos = malloc(sizeof(t_philo) * info.num_philos);
 	if (!philos)
 	{
 		printf("Malloc failed (philosophers)\n");
-		exit(1);
+		return (1);
 	}
 	validation_2(philos, &info);
+	return (0);
 }
 
 int	main(int argc, char **argv)
 {
+	int	check;
+
+	check = 0;
 	if (argc == 5 || argc == 6)
-		validation(argv);
+	{
+		check = validation(argv);
+		if (check == 1)
+			return (1);
+	}
 	else
-		return (printf("Usage: n_philos t_die t_eat t_sleep [eat_limit]\n"), -1);
+		return (printf("Usage: n_philos t_die t_eat t_sleep [eat_limit]\n"), 1);
 	return (0);
 }

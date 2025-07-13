@@ -6,7 +6,7 @@
 /*   By: arimanuk <arimanuk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/25 20:45:29 by arimanuk          #+#    #+#             */
-/*   Updated: 2025/07/11 20:49:29 by arimanuk         ###   ########.fr       */
+/*   Updated: 2025/07/12 17:20:29 by arimanuk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,14 +56,15 @@ int	ft_strcmp(char *s1, char *s2)
 	return (0);
 }
 
-long long current_timestamp_ms(void)
+long long	current_timestamp_ms(void)
 {
-	struct timeval time;
+	struct timeval	time;
+
 	gettimeofday(&time, NULL);
 	return (time.tv_sec * 1000LL + time.tv_usec / 1000);
 }
 
-long check_atoi(long long num)
+long	check_atoi(long long num)
 {
 	if ((num < INT_MIN || num > INT_MAX) || num <= 0)
 	{
