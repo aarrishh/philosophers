@@ -6,7 +6,7 @@
 /*   By: arimanuk <arimanuk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/11 20:45:00 by arimanuk          #+#    #+#             */
-/*   Updated: 2025/07/12 17:12:54 by arimanuk         ###   ########.fr       */
+/*   Updated: 2025/07/13 18:05:22 by arimanuk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 int	init_info(char **argv, t_info *info)
 {
+
 	int	num_philos;
 
 	num_philos = check_atoi(ft_atoi(argv[1]));
