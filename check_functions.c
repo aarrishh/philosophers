@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   check_functions.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arimanuk <arimanuk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: arina <arina@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/11 20:51:05 by arimanuk          #+#    #+#             */
-/*   Updated: 2025/07/12 17:01:09 by arimanuk         ###   ########.fr       */
+/*   Updated: 2025/07/13 18:55:47 by arina            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ void	*for_eat(void *philo)
 		pthread_mutex_unlock(&ph->info->alive_mutex);
 		if (for_eat_2(ph) == 1)
 			return (NULL);
+		ph->info->done_eating = 0;
 	}
 }
 

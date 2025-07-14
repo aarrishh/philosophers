@@ -6,32 +6,47 @@
 /*   By: arina <arina@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/11 20:45:00 by arimanuk          #+#    #+#             */
-/*   Updated: 2025/07/13 18:08:20 by arina            ###   ########.fr       */
+/*   Updated: 2025/07/14 17:17:39 by arina            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
+int	check_negative_number(t_info *info)
+{
+	if (info->num_philos < 0 || info->time_to_die < 0 ||
+		info->time_to_eat < 0 || info->time_to_sleep < 0)
+		return (printf("Error: Invalid number\n"), -1);
+	else if (info->flag == 1 && info->eat_limit < 0)
+		return (printf("Error: Invalid number\n"), -1);
+	return (0);
+}
+
 int	init_info(char **argv, t_info *info)
 {
-	int	num_philos;
-
-	num_philos = check_atoi(ft_atoi(argv[1]));
-	if (num_philos > MAX_PHILOS)
+	info->flag = 1;
+	info->num_philos = check_atoi(ft_atoi(argv[1]));
+	if (info->num_philos > MAX_PHILOS)
 		return (printf("Error: Too many philos (max %d)\n", MAX_PHILOS), -1);
 	info->time_to_die = check_atoi(ft_atoi(argv[2]));
 	info->time_to_eat = check_atoi(ft_atoi(argv[3]));
 	info->time_to_sleep = check_atoi(ft_atoi(argv[4]));
+	if (argv[5])
+		info->eat_limit = check_atoi(ft_atoi(argv[5]));
+	else
+	{
+		info->eat_limit = -1;
+		info->flag = 0;
+	}
+	if (check_negative_number(info) == -1)
+		return (-1);
 	info->start_time = current_timestamp_ms();
 	info->is_alive = 1;
 	pthread_mutex_init(&info->alive_mutex, NULL);
 	pthread_mutex_init(&info->check_eat_count_mutex, NULL);
 	info->eat_limit = -1;
-	if (argv[5])
-		info->eat_limit = check_atoi(ft_atoi(argv[5]));
-	info->num_philos = num_philos;
 	info->done_eating = 0;
-	return (num_philos);
+	return (info->num_philos);
 }
 
 void	init_philo(t_philo *philos, t_info *info)

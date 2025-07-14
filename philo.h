@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arimanuk <arimanuk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: arina <arina@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/25 18:55:22 by arimanuk          #+#    #+#             */
-/*   Updated: 2025/07/12 17:18:03 by arimanuk         ###   ########.fr       */
+/*   Updated: 2025/07/14 16:48:07 by arina            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ typedef struct s_info
 	int				time_to_eat;
 	int				time_to_die;
 	int				eat_limit;
+	int				flag;
 	int				time_to_sleep;
 	int				is_alive;
 	int				done_eating;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arimanuk <arimanuk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: arina <arina@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/25 20:45:29 by arimanuk          #+#    #+#             */
-/*   Updated: 2025/07/12 17:20:29 by arimanuk         ###   ########.fr       */
+/*   Updated: 2025/07/14 15:12:34 by arina            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,9 +67,6 @@ long long	current_timestamp_ms(void)
 long	check_atoi(long long num)
 {
 	if ((num < INT_MIN || num > INT_MAX) || num <= 0)
-	{
-		printf("Error: Invalid number\n");
-		exit(1);
-	}
+		return (-1);
 	return (num);
 }
