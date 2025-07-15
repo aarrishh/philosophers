@@ -6,11 +6,24 @@
 /*   By: arimanuk <arimanuk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/11 20:35:31 by arimanuk          #+#    #+#             */
-/*   Updated: 2025/07/12 17:11:41 by arimanuk         ###   ########.fr       */
+/*   Updated: 2025/07/15 14:47:04 by arimanuk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+void	my_usleep(long long time, t_philo *ph)
+{
+	long long	start;
+
+	start = current_timestamp_ms();
+	while ((current_timestamp_ms() - start) * 1000 < time)
+	{
+		if (check_alive(ph) == -1)
+			break ;
+		usleep(100);
+	}
+}
 
 void	*thread_function_2(t_philo *ph)
 {
@@ -26,16 +39,16 @@ void	*thread_function_2(t_philo *ph)
 		pthread_mutex_unlock(ph->left_fork);
 		return (NULL);
 	}
+	ph->last_meal_time = current_timestamp_ms();
 	pthread_mutex_lock(&ph->info->check_eat_count_mutex);
 	ph->eat_count += 1;
 	pthread_mutex_unlock(&ph->info->check_eat_count_mutex);
-	ph->last_meal_time = current_timestamp_ms();
-	usleep(ph->info->time_to_eat * 1000);
+	my_usleep(ph->info->time_to_eat * 1000, ph);
 	pthread_mutex_unlock(ph->right_fork);
 	pthread_mutex_unlock(ph->left_fork);
 	if (!print_message(ph, "is sleeping"))
 		return (NULL);
-	usleep(ph->info->time_to_sleep * 1000);
+	my_usleep(ph->info->time_to_sleep * 1000, ph);
 	if (!print_message(ph, "is thinking"))
 		return (NULL);
 	return ("");
