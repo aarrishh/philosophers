@@ -6,7 +6,7 @@
 /*   By: arimanuk <arimanuk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/25 18:55:22 by arimanuk          #+#    #+#             */
-/*   Updated: 2025/07/15 15:15:40 by arimanuk         ###   ########.fr       */
+/*   Updated: 2025/07/15 17:56:20 by arimanuk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ typedef struct s_info
 	int				time_to_sleep;
 	int				is_alive;
 	int				done_eating;
+	pthread_mutex_t	done_eating_mutex;
 	long long		start_time;
 	pthread_t		eat_thread_id;
 	pthread_mutex_t	check_eat_count_mutex;
@@ -48,6 +49,7 @@ typedef struct s_philo
 	int				id;
 	int				eat_count;
 	long long		last_meal_time;
+	pthread_mutex_t	last_meal_time_mutex;
 	pthread_t		thread_id;
 	pthread_t		life_thread_id;
 	pthread_mutex_t	*left_fork;

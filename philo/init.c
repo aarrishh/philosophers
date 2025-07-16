@@ -6,7 +6,7 @@
 /*   By: arimanuk <arimanuk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/11 20:45:00 by arimanuk          #+#    #+#             */
-/*   Updated: 2025/07/15 15:20:02 by arimanuk         ###   ########.fr       */
+/*   Updated: 2025/07/15 18:25:52 by arimanuk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ int	init_info(char **argv, t_info *info)
 	info->is_alive = 1;
 	pthread_mutex_init(&info->alive_mutex, NULL);
 	pthread_mutex_init(&info->check_eat_count_mutex, NULL);
+	pthread_mutex_init(&info->done_eating_mutex, NULL);
 	info->done_eating = 0;
 	return (info->num_philos);
 }
@@ -63,6 +64,7 @@ void	init_philo(t_philo *philos, t_info *info)
 		philos[i].info = info;
 		philos[i].left_fork = &info->forks[i];
 		philos[i].right_fork = &info->forks[(i + 1) % info->num_philos];
+		pthread_mutex_init(&philos[i].last_meal_time_mutex, NULL);
 		pthread_create(&philos[i].thread_id, NULL, thread_function, &philos[i]);
 		pthread_create(&philos[i].life_thread_id, NULL, for_life, &philos[i]);
 		i++;
