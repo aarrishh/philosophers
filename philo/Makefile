@@ -6,14 +6,14 @@
 #    By: arimanuk <arimanuk@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/06/25 18:57:28 by arimanuk          #+#    #+#              #
-#    Updated: 2025/07/15 19:03:48 by arimanuk         ###   ########.fr        #
+#    Updated: 2025/07/16 20:05:14 by arimanuk         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = philo
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror #-g -fsanitize=thread
+CFLAGS = -Wall -Wextra -Werror #-g3 -fsanitize=thread
 
 SRCS = main.c utils.c init.c check_functions.c thread_functions.c
 

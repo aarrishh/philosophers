@@ -6,7 +6,7 @@
 /*   By: arimanuk <arimanuk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/25 20:45:29 by arimanuk          #+#    #+#             */
-/*   Updated: 2025/07/15 15:15:46 by arimanuk         ###   ########.fr       */
+/*   Updated: 2025/07/16 20:57:16 by arimanuk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,4 +69,17 @@ long	check_atoi(long long num)
 	if ((num < INT_MIN || num > INT_MAX) || num <= 0)
 		return (-1);
 	return (num);
+}
+
+void	my_usleep(long long time, t_philo *ph)
+{
+	long long	start;
+
+	start = current_timestamp_ms();
+	while (current_timestamp_ms() - start < time)
+	{
+		if (check_alive(ph) == -1)
+			break ;
+		usleep(100);
+	}
 }

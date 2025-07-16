@@ -6,16 +6,24 @@
 /*   By: arimanuk <arimanuk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/11 20:51:05 by arimanuk          #+#    #+#             */
-/*   Updated: 2025/07/15 19:01:01 by arimanuk         ###   ########.fr       */
+/*   Updated: 2025/07/16 19:30:45 by arimanuk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
+void	dinner_end(t_philo *ph)
+{
+	long long	timestamp;
+
+	ph->info->is_alive = -1;
+	timestamp = current_timestamp_ms() - ph->info->start_time;
+	printf("[%lld] DINNER IS OVER\n", timestamp);
+}
+
 int	for_eat_2(t_philo *ph)
 {
 	int			i;
-	long long	timestamp;
 
 	i = -1;
 	while (++i < ph->info->num_philos)
@@ -32,18 +40,13 @@ int	for_eat_2(t_philo *ph)
 	pthread_mutex_lock(&ph->info->done_eating_mutex);
 	if (ph->info->done_eating == ph->info->num_philos)
 	{
-		pthread_mutex_unlock(&ph->info->done_eating_mutex);//?
 		pthread_mutex_lock(&ph->info->alive_mutex);
 		if (ph->info->is_alive == 1)
-		{
-			ph->info->is_alive = -1;
-			timestamp = current_timestamp_ms() - ph->info->start_time;
-			printf("[%lld] DINNER IS OVER\n", timestamp);
-		}
+			dinner_end(ph);
 		pthread_mutex_unlock(&ph->info->alive_mutex);
 		return (1);
 	}
-	// pthread_mutex_unlock(&ph->info->done_eating_mutex);//?
+	pthread_mutex_unlock(&ph->info->done_eating_mutex);
 	return (0);
 }
 
@@ -65,7 +68,7 @@ void	*for_eat(void *philo)
 		if (for_eat_2(ph) == 1)
 			return (NULL);
 		pthread_mutex_lock(&ph->info->done_eating_mutex);
-		ph->info->done_eating = 0;//
+		ph->info->done_eating = 0;
 		pthread_mutex_unlock(&ph->info->done_eating_mutex);
 	}
 }
