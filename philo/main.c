@@ -6,7 +6,7 @@
 /*   By: arimanuk <arimanuk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/11 20:50:18 by arimanuk          #+#    #+#             */
-/*   Updated: 2025/07/15 15:15:29 by arimanuk         ###   ########.fr       */
+/*   Updated: 2025/07/17 19:31:56 by arimanuk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,8 +58,10 @@ void	validation_2(t_philo *philos, t_info *info)
 	while (i < info->num_philos)
 	{
 		pthread_mutex_destroy(&info->forks[i]);
+		pthread_mutex_destroy(&philos[i].last_meal_time_mutex);
 		i++;
 	}
+	destroy_function(philos, info);
 	free(info->forks);
 	free(philos);
 }
@@ -71,14 +73,14 @@ int	validation(char **argv)
 	int		i;
 
 	philos = NULL;
-	info.num_philos = init_info(argv, &info);
+	info.num_philos = init_info(argv, &info, philos);
 	if (info.num_philos == -1)
-		return (1);
+		return (destroy_function(philos, &info), 1);
 	info.forks = malloc(sizeof(pthread_mutex_t) * info.num_philos);
 	if (!info.forks)
 	{
 		printf("Malloc failed (forks)\n");
-		return (1);
+		return (destroy_function(philos, &info), 1);
 	}
 	i = 0;
 	while (i < info.num_philos)
@@ -87,7 +89,7 @@ int	validation(char **argv)
 	if (!philos)
 	{
 		printf("Malloc failed (philosophers)\n");
-		return (1);
+		return (destroy_function(philos, &info), 1);
 	}
 	validation_2(philos, &info);
 	return (0);

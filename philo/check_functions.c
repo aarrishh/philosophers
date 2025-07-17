@@ -6,7 +6,7 @@
 /*   By: arimanuk <arimanuk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/11 20:51:05 by arimanuk          #+#    #+#             */
-/*   Updated: 2025/07/16 19:30:45 by arimanuk         ###   ########.fr       */
+/*   Updated: 2025/07/17 20:14:20 by arimanuk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	dinner_end(t_philo *ph)
 
 int	for_eat_2(t_philo *ph)
 {
-	int			i;
+	int	i;
 
 	i = -1;
 	while (++i < ph->info->num_philos)
@@ -44,7 +44,7 @@ int	for_eat_2(t_philo *ph)
 		if (ph->info->is_alive == 1)
 			dinner_end(ph);
 		pthread_mutex_unlock(&ph->info->alive_mutex);
-		return (1);
+		return (pthread_mutex_unlock(&ph->info->done_eating_mutex), 1);
 	}
 	pthread_mutex_unlock(&ph->info->done_eating_mutex);
 	return (0);
@@ -82,5 +82,17 @@ int	check_alive(t_philo *ph)
 		return (-1);
 	}
 	pthread_mutex_unlock(&ph->info->alive_mutex);
+	return (0);
+}
+
+int	check_negative_number(t_info *info)
+{
+	if (info->num_philos < 0 || info->time_to_die < 0
+		|| info->time_to_eat < 0 || info->time_to_sleep < 0)
+		return (printf("Error: Invalid number\n"), -1);
+	else if (info->flag == 1 && info->eat_limit < 0)
+		return (printf("Error: Invalid number\n"), -1);
+	if (info->time_to_eat > 100000000)
+		return (printf("Error: time_to_eat too large\n"), -1);
 	return (0);
 }

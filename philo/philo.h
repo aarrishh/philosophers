@@ -6,7 +6,7 @@
 /*   By: arimanuk <arimanuk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/25 18:55:22 by arimanuk          #+#    #+#             */
-/*   Updated: 2025/07/15 17:56:20 by arimanuk         ###   ########.fr       */
+/*   Updated: 2025/07/17 20:16:01 by arimanuk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,10 +35,10 @@ typedef struct s_info
 	int				time_to_sleep;
 	int				is_alive;
 	int				done_eating;
-	pthread_mutex_t	done_eating_mutex;
 	long long		start_time;
 	pthread_t		eat_thread_id;
 	pthread_mutex_t	check_eat_count_mutex;
+	pthread_mutex_t	done_eating_mutex;
 	pthread_mutex_t	alive_mutex;
 	pthread_mutex_t	*forks;
 	t_philo			*philos;
@@ -49,17 +49,17 @@ typedef struct s_philo
 	int				id;
 	int				eat_count;
 	long long		last_meal_time;
-	pthread_mutex_t	last_meal_time_mutex;
 	pthread_t		thread_id;
 	pthread_t		life_thread_id;
+	pthread_mutex_t	last_meal_time_mutex;
 	pthread_mutex_t	*left_fork;
 	pthread_mutex_t	*right_fork;
 	t_info			*info;
 }	t_philo;
 
-//Libft functions
+int			init_info(char **argv, t_info *info, t_philo *philo);
 int			print_message(t_philo *ph, char *text);
-int			init_info(char **argv, t_info *info);
+int			check_negative_number(t_info *info);
 int			check_alive(t_philo *ph);
 int			for_eat_2(t_philo *ph);
 long long	current_timestamp_ms(void);
@@ -72,4 +72,7 @@ void		*thread_function(void *philo);
 void		init_philo(t_philo *philos, t_info *info);
 void		simulation(t_philo *philos, t_info *info);
 void		validation_2(t_philo *philos, t_info *info);
+void		destroy_function(t_philo *philo, t_info *info);
+void		my_usleep(long long time, t_philo *ph);
+
 #endif

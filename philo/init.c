@@ -6,25 +6,22 @@
 /*   By: arimanuk <arimanuk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/11 20:45:00 by arimanuk          #+#    #+#             */
-/*   Updated: 2025/07/15 18:25:52 by arimanuk         ###   ########.fr       */
+/*   Updated: 2025/07/17 20:15:44 by arimanuk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	check_negative_number(t_info *info)
+void	destroy_function(t_philo *philo, t_info *info)
 {
-	if (info->num_philos < 0 || info->time_to_die < 0
-		|| info->time_to_eat < 0 || info->time_to_sleep < 0)
-		return (printf("Error: Invalid number\n"), -1);
-	else if (info->flag == 1 && info->eat_limit < 0)
-		return (printf("Error: Invalid number\n"), -1);
-	if (info->time_to_eat > 100000000)
-		return (printf("Error: time_to_eat too large\n"), -1);
-	return (0);
+	(void)philo;
+	(void)info;
+	pthread_mutex_destroy(&info->alive_mutex);
+	pthread_mutex_destroy(&info->check_eat_count_mutex);
+	pthread_mutex_destroy(&info->done_eating_mutex);
 }
 
-int	init_info(char **argv, t_info *info)
+int	init_info(char **argv, t_info *info, t_philo *philo)
 {
 	info->flag = 1;
 	info->num_philos = check_atoi(ft_atoi(argv[1]));
@@ -41,7 +38,7 @@ int	init_info(char **argv, t_info *info)
 		info->flag = 0;
 	}
 	if (check_negative_number(info) == -1)
-		return (-1);
+		return (destroy_function(philo, info), -1);
 	info->start_time = current_timestamp_ms();
 	info->is_alive = 1;
 	pthread_mutex_init(&info->alive_mutex, NULL);
