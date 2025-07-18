@@ -6,7 +6,7 @@
 /*   By: arimanuk <arimanuk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/11 20:51:05 by arimanuk          #+#    #+#             */
-/*   Updated: 2025/07/17 20:14:20 by arimanuk         ###   ########.fr       */
+/*   Updated: 2025/07/18 16:00:26 by arimanuk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,5 @@ int	check_negative_number(t_info *info)
 		return (printf("Error: Invalid number\n"), -1);
 	else if (info->flag == 1 && info->eat_limit < 0)
 		return (printf("Error: Invalid number\n"), -1);
-	if (info->time_to_eat > 100000000)
-		return (printf("Error: time_to_eat too large\n"), -1);
 	return (0);
 }

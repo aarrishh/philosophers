@@ -6,7 +6,7 @@
 /*   By: arimanuk <arimanuk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/25 18:55:22 by arimanuk          #+#    #+#             */
-/*   Updated: 2025/07/17 20:16:01 by arimanuk         ###   ########.fr       */
+/*   Updated: 2025/07/18 15:26:06 by arimanuk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ typedef struct s_philo
 	t_info			*info;
 }	t_philo;
 
-int			init_info(char **argv, t_info *info, t_philo *philo);
+int			init_info(char **argv, t_info *info);
 int			print_message(t_philo *ph, char *text);
 int			check_negative_number(t_info *info);
 int			check_alive(t_philo *ph);
@@ -72,7 +72,7 @@ void		*thread_function(void *philo);
 void		init_philo(t_philo *philos, t_info *info);
 void		simulation(t_philo *philos, t_info *info);
 void		validation_2(t_philo *philos, t_info *info);
-void		destroy_function(t_philo *philo, t_info *info);
+void		destroy_function(t_info *info);
 void		my_usleep(long long time, t_philo *ph);
 
 #endif

@@ -6,22 +6,20 @@
 /*   By: arimanuk <arimanuk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/11 20:45:00 by arimanuk          #+#    #+#             */
-/*   Updated: 2025/07/17 20:15:44 by arimanuk         ###   ########.fr       */
+/*   Updated: 2025/07/18 15:25:28 by arimanuk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	destroy_function(t_philo *philo, t_info *info)
+void	destroy_function(t_info *info)
 {
-	(void)philo;
-	(void)info;
 	pthread_mutex_destroy(&info->alive_mutex);
 	pthread_mutex_destroy(&info->check_eat_count_mutex);
 	pthread_mutex_destroy(&info->done_eating_mutex);
 }
 
-int	init_info(char **argv, t_info *info, t_philo *philo)
+int	init_info(char **argv, t_info *info)
 {
 	info->flag = 1;
 	info->num_philos = check_atoi(ft_atoi(argv[1]));
@@ -38,7 +36,7 @@ int	init_info(char **argv, t_info *info, t_philo *philo)
 		info->flag = 0;
 	}
 	if (check_negative_number(info) == -1)
-		return (destroy_function(philo, info), -1);
+		return (-1);
 	info->start_time = current_timestamp_ms();
 	info->is_alive = 1;
 	pthread_mutex_init(&info->alive_mutex, NULL);
